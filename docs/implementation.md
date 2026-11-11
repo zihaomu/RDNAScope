@@ -141,3 +141,17 @@ is protected separately from managed GC and has monitored per-run budgets, not
 automatic archival deletion or filesystem hard quotas. All selected cards were
 still occupied at closeout; no new GPU/model work, foreign stop or source adoption
 occurred. Live R3–R6 acceptance stays open with the explicit resource prerequisite.
+
+## Initial repository publication and CPU CI
+
+The reviewed 73 public files were committed and normally pushed to `main` in the
+previously empty target repository. Commit
+[`588a8e1`](https://github.com/zihaomu/RDNAScope/commit/588a8e1e3681c2dc2bbfc76cefe956a0618c2bf3)
+contains the implementation. [CPU CI run 43002759303](https://github.com/zihaomu/RDNAScope/actions/runs/43002759303)
+completed successfully for both Python 3.12 and 3.13, including tests, wheel build
+and analysis outside the checkout. The manual GPU workflow was not dispatched.
+
+The [0.2.0a1 release notes](release-0.2.0a1.md) describe the software alpha and open
+hardware gates. Distribution artifacts and a sanitized validation summary belong
+to the [GitHub prerelease](https://github.com/zihaomu/RDNAScope/releases/tag/v0.2.0a1).
+Private inputs/logs/profiles/caches remain outside Git and release assets.

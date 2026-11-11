@@ -141,6 +141,16 @@ against an exact context with `capabilities resolve CONTEXT.json`. Changed devic
 runtime, tool build, mode, world or workload invalidates the match. The
 [support snapshot](support.md) lists the actual current qualification.
 
+Manual GitHub GPU CI is opt-in on trusted `main`, with a self-hosted runner labeled
+`linux` and `rdna-qualified`. The operator configures repository variables
+`RDNASCOPE_GPU_PROFILE`, `RDNASCOPE_GPU_PROFILE_SHA256` and
+`RDNASCOPE_GPU_PLAN_ROOT` to private local bindings. Workflow inputs identify a
+reviewed plan basename and exact SHA. The plan includes physical cards and a
+timeout no greater than 2700 seconds; actual runtime guards still apply. Raw
+results remain private on the runner, and the job prints only a status summary.
+No such runner configuration or GPU job execution is implied by installing the
+package or by passing CPU CI.
+
 ## Official UI
 
 ```bash

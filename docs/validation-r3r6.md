@@ -60,9 +60,17 @@ GPU paths, framework cache use and numerical/performance gates remain unvalidate
 
 ## Packaging, publication and retained evidence
 
-The implementation log records final original-project regression, source SHA,
-wheel/sdist, isolated installation, link/privacy and publication checks once run.
-CPU CI includes Python 3.12/3.13 and installed-wheel analysis. GPU CI is manual,
+Original-project regressions passed **40 tests**; the opening **56-file** source
+snapshot is unchanged. All **809** accepted FreeToken source manifest entries
+remain unchanged and the isolated candidate has exactly one intended source delta.
+Installed-wheel validation passed 13 schemas, source-independent analysis/case
+verification, actual three-boot CPU workload and GC protection for its evidence.
+The `tlp` bridge matches the original doctor JSON; pip check passed, with no heavy
+framework/browser dependencies. The public-file review passed 73 files and 60
+local Markdown links, with private data excluded.
+
+[Remote CPU CI](https://github.com/zihaomu/RDNAScope/actions/runs/43002759303)
+passed Python 3.12/3.13 tests, build and installed-wheel analysis. GPU CI is manual,
 requires a separately configured trusted runner/profile and exact reviewed plan
 SHA, and was not dispatched against the occupied host.
 

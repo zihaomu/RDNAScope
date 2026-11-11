@@ -6,7 +6,7 @@ devices were occupied by other jobs and admission refused them.
 
 | Area | Observed validation | Boundary |
 |---|---|---|
-| Offline core | Linux, Python 3.12; CPU contracts/providers/lifecycle and isolated installed wheel | Python 3.13 is configured in remote CI; see the actual run before claiming it passed |
+| Offline core | Linux, local Python 3.12; remote Python 3.12/3.13 CPU tests, build and installed-wheel analysis passed | CPU software qualification only; [actual CI](https://github.com/zihaomu/RDNAScope/actions/runs/43002759303) |
 | Native readers | Historical R9700/gfx1201, locked ROCm 10.1 / HIP 7.16, official rocpd/PFTrace QUEUE path | Historical reanalysis; not a new collection qualification |
 | Native conservation | 8936 kernels, 96,430,756 ns sum; names/start/duration/PID/Graph/node/queue/stream match | Two decode Graph replays per rank; not complete model coverage |
 | Rejected inputs | Historical STREAM mismatch, synthetic truncated DB/missing rank/bad Graph window | Negative evidence remains archived |
