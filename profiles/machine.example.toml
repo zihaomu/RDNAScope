@@ -1,0 +1,42 @@
+# Copy to machine.local.toml (ignored by Git). All relative paths are relative
+# to this profile file, independently of the caller's working directory.
+[paths]
+data_dir = "../state"
+cache_dir = "../state/cache"
+
+[limits]
+json_bytes = 67108864
+query_seconds = 60
+
+# Owner-selected policy; omitted capacity/TTL thresholds are unconfigured.
+# GC remains explicit even with a configured TTL. These are logical byte counts.
+[storage]
+# max_bytes = ...
+# min_free_bytes = ...
+# ttl_seconds = ...
+query_reserve_bytes = 8388608
+
+# Optional. Set actual paths only in a private local profile.
+# [tools]
+# trace_processor = "/path/to/official/trace_processor_shell"
+# [legacy]
+# executable = "/path/to/original/prototype/.venv/bin/tlp"
+
+# Portable record source IDs resolve only through local bindings.
+# Reserved rdnascope-cache / rdnascope-evidence roots are supplied by the core.
+# [sources]
+# capture-evidence = "/path/to/read-only/evidence"
+
+# Explicit device discovery/admission only; doctor never invokes SMI.
+# Use real local exclusions and measured workload RAM needs in a private profile.
+# [machine]
+# smi_executable = "/path/to/rocm-smi"
+# reservation_dir = "/path/to/shared/reservations"
+# excluded_physical = []
+# excluded_unfiltered = []
+# min_available_ram_bytes = ...
+
+# Optional trusted external adapter, with executable/identity SHA and fixed
+# action templates. GPU adapters additionally own the shared lease/observer
+# protocol; setting a boolean alone does not implement that protocol.
+# See docs/workflows.md. Never bind a shared case to a personal absolute path.

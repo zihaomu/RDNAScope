@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RDNAScope quality v1", "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "capabilities", "limits"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "capabilities": {"type": "object", "additionalProperties": {"type": "object", "additionalProperties": false, "required": ["status", "reason", "evidence"], "properties": {"status": {"enum": ["pass", "fail", "unknown", "not_applicable"]}, "reason": {"type": "string"}, "evidence": {"type": "array", "items": {"type": "string"}}}}},
+    "limits": {"type": "array", "items": {"type": "string"}}
+  }
+}

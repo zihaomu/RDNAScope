@@ -1,0 +1,13 @@
+.venv*/
+.cache/
+artifacts/
+state/
+dist/
+build/
+*.egg-info/
+__pycache__/
+.pytest_cache/
+*.local.toml
+*.local.json
+.coverage
+htmlcov/

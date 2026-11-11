@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rdnascope"
+version = "0.2.0a1"
+description = "Evidence-backed offline performance diagnostics for AMD RDNA workloads"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+dependencies = ["jsonschema>=4.23,<5"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[project.scripts]
+rdnascope = "rdnascope.cli:main"
+tlp = "rdnascope.legacy:main"
+
+[project.urls]
+Repository = "https://github.com/zihaomu/RDNAScope"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+rdnascope = ["schemas/v1/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RDNAScope capability v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "basis",
+    "context",
+    "features",
+    "revalidate_on"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "basis": {
+      "enum": [
+        "live",
+        "historical_reanalysis",
+        "synthetic",
+        "declaration"
+      ]
+    },
+    "context": {
+      "type": "object"
+    },
+    "features": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status",
+          "reason",
+          "scope",
+          "evidence"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "not_tested",
+              "qualified",
+              "conditional",
+              "failed",
+              "unsupported"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "revalidate_on": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

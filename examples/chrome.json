@@ -1,0 +1,9 @@
+{
+  "fixture": "Synthetic CPU/GPU-like event encoding only; no hardware was measured",
+  "displayTimeUnit": "ns",
+  "traceEvents": [
+    {"ph":"X","cat":"hip_api","name":"synthetic_launch","pid":1,"tid":1,"ts":10,"dur":2},
+    {"ph":"X","cat":"kernel","name":"synthetic_vector_add","pid":1,"tid":2,"ts":12,"dur":3,"args":{"phase":"decode","position":8}},
+    {"ph":"X","cat":"kernel","name":"synthetic_vector_add","pid":1,"tid":2,"ts":17,"dur":3,"args":{"phase":"decode","position":9}}
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RDNAScope measurement v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "basis",
+    "contract_id",
+    "adapter",
+    "boot",
+    "arm",
+    "context",
+    "samples",
+    "output_audit",
+    "resource_audit",
+    "collection_status"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "basis": {
+      "enum": [
+        "live",
+        "historical_reanalysis",
+        "synthetic",
+        "declaration"
+      ]
+    },
+    "contract_id": {
+      "type": "string"
+    },
+    "adapter": {
+      "enum": [
+        "freetoken-http",
+        "metric-json"
+      ]
+    },
+    "boot": {
+      "type": "string"
+    },
+    "arm": {
+      "enum": [
+        "A",
+        "B"
+      ]
+    },
+    "context": {
+      "type": "object"
+    },
+    "samples": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "case",
+          "repeat",
+          "warmup",
+          "ok",
+          "value",
+          "output_correct"
+        ],
+        "properties": {
+          "case": {
+            "type": "string"
+          },
+          "repeat": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "warmup": {
+            "type": "boolean"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "value": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "output_correct": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "detail": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "output_audit": {
+      "enum": [
+        "verified",
+        "reported_only",
+        "failed",
+        "unknown"
+      ]
+    },
+    "resource_audit": {
+      "enum": [
+        "verified",
+        "contaminated",
+        "unknown"
+      ]
+    },
+    "collection_status": {
+      "enum": [
+        "complete",
+        "failed",
+        "incomplete"
+      ]
+    }
+  }
+}

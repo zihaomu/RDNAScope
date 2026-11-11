@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "experiment_id": "demo",
+  "run_id": "demo",
+  "role": "fixture",
+  "source": {
+    "revision": null,
+    "patch_sha256": null
+  },
+  "environment": {
+    "digest": null
+  },
+  "workload": {
+    "name": "Synthetic event fixture",
+    "model_revision": null,
+    "tp": null,
+    "ep": null,
+    "graph": null
+  },
+  "ranks": [],
+  "clock": {
+    "domain": "unknown",
+    "calibration": "unknown",
+    "uncertainty_ns": null
+  },
+  "semantics": {
+    "time_unit": "us",
+    "native_rank": null
+  },
+  "extensions": {}
+}

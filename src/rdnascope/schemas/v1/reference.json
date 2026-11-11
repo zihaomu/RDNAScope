@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RDNAScope reference v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "basis",
+    "kind",
+    "reference_type",
+    "context",
+    "match_keys",
+    "metric",
+    "unit",
+    "value",
+    "uncertainty",
+    "qualification",
+    "capability_id",
+    "revalidate_on",
+    "measurement_ids"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "basis": {
+      "enum": [
+        "live",
+        "historical_reanalysis",
+        "synthetic",
+        "declaration"
+      ]
+    },
+    "kind": {
+      "enum": [
+        "model",
+        "kernel",
+        "communication"
+      ]
+    },
+    "reference_type": {
+      "enum": [
+        "specification_bound",
+        "reachable_calibration",
+        "same_condition_baseline"
+      ]
+    },
+    "context": {
+      "type": "object"
+    },
+    "match_keys": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "metric": {
+      "type": "string"
+    },
+    "unit": {
+      "type": "string"
+    },
+    "value": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "exclusiveMinimum": 0
+    },
+    "uncertainty": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "qualification": {
+      "enum": [
+        "qualified",
+        "conditional",
+        "unknown"
+      ]
+    },
+    "capability_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "revalidate_on": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "measurement_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

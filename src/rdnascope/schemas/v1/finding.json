@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RDNAScope finding v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "basis",
+    "run_id",
+    "domain",
+    "status",
+    "observation",
+    "position",
+    "reference",
+    "evidence",
+    "limits",
+    "alternatives",
+    "next_experiment",
+    "numeric_gap",
+    "recoverable_wall_ns"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "basis": {
+      "enum": [
+        "live",
+        "historical_reanalysis",
+        "synthetic",
+        "declaration"
+      ]
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "domain": {
+      "enum": [
+        "model",
+        "kernel",
+        "multigpu"
+      ]
+    },
+    "status": {
+      "enum": [
+        "diagnostic",
+        "hypothesis",
+        "inconclusive",
+        "rejected",
+        "validated"
+      ]
+    },
+    "observation": {
+      "type": "string"
+    },
+    "position": {
+      "type": "object"
+    },
+    "reference": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "limits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "alternatives": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "next_experiment": {
+      "type": "string"
+    },
+    "numeric_gap": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "recoverable_wall_ns": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

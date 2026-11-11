@@ -1,0 +1,4 @@
+[
+  {"case":"synthetic","repeat":0,"warmup":true,"wall_seconds":0.1,"first_text_seconds":0.04,"usage":{"completion_tokens":4},"timings":{"predicted_per_second":50.0}},
+  {"case":"synthetic","repeat":1,"warmup":false,"wall_seconds":0.09,"first_text_seconds":0.03,"usage":{"completion_tokens":4},"timings":{"predicted_per_second":55.0}}
+]

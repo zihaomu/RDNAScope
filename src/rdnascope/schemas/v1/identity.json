@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RDNAScope identity v1",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "experiment_id", "run_id", "role", "source", "environment", "workload", "ranks", "clock", "semantics", "extensions"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "experiment_id": {"$ref": "#/$defs/id"}, "run_id": {"$ref": "#/$defs/id"},
+    "role": {"enum": ["baseline", "candidate", "diagnostic", "reference", "fixture"]},
+    "source": {"type": "object", "additionalProperties": false, "required": ["revision", "patch_sha256"], "properties": {"revision": {"type": ["string", "null"]}, "patch_sha256": {"anyOf": [{"$ref": "#/$defs/sha"}, {"type": "null"}]}}},
+    "environment": {"type": "object", "required": ["digest"], "additionalProperties": false, "properties": {"digest": {"anyOf": [{"$ref": "#/$defs/sha"}, {"type": "null"}]}}},
+    "workload": {"type": "object", "additionalProperties": false, "required": ["name", "model_revision", "tp", "ep", "graph"], "properties": {"name": {"type": ["string", "null"]}, "model_revision": {"type": ["string", "null"]}, "tp": {"type": ["integer", "null"], "minimum": 1}, "ep": {"type": ["integer", "null"], "minimum": 1}, "graph": {"type": ["boolean", "null"]}, "dtype": {"type": ["string", "null"]}, "concurrency": {"type": ["integer", "null"], "minimum": 1}, "output_tokens": {"type": ["integer", "null"], "minimum": 1}}},
+    "ranks": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["rank", "process_id", "device_uuid", "pci", "gfx"], "properties": {"rank": {"type": "integer", "minimum": 0}, "process_id": {"type": ["integer", "null"], "minimum": 0}, "device_uuid": {"type": ["string", "null"]}, "pci": {"type": ["string", "null"]}, "gfx": {"type": ["string", "null"]}}}},
+    "clock": {"type": "object", "additionalProperties": false, "required": ["domain", "calibration", "uncertainty_ns"], "properties": {"domain": {"type": "string"}, "calibration": {"enum": ["unknown", "declared"]}, "uncertainty_ns": {"type": ["integer", "null"], "minimum": 0}}},
+    "semantics": {"type": "object", "additionalProperties": false, "required": ["time_unit", "native_rank"], "properties": {"time_unit": {"enum": ["ns", "us", "ms"]}, "native_rank": {"type": ["integer", "null"], "minimum": 0}}},
+    "extensions": {"type": "object"}
+  },
+  "$defs": {"id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"}, "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}
