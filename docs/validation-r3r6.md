@@ -1,7 +1,7 @@
 # R3–R6 validation — 2026-11-11, alpha 0.2.0a1
 
 R3–R6's software interfaces are implemented. Live GPU acceptance is incomplete.
-All selected GPU snapshots showed foreign occupancy and the workload launcher
+At the published alpha checkpoint, selected snapshots showed foreign occupancy and the workload launcher
 returned `resource_blocked` before starting a child. No new GPU/model run, foreign
 process stop, accepted-source change or real-cache GC was performed.
 
@@ -86,3 +86,40 @@ prompts, traces, machine bindings, environments and complete runtime logs are no
 The [support matrix](support.md) and [workflow guide](workflows.md) separate
 implemented APIs from outstanding hardware and performance acceptance. This alpha
 does not close the entire R3–R6 live-validation plan.
+
+## Later local live acceptance
+
+See [implementation](implementation.md#live-acceptance--2026-11-11-local-changes-after-the-alpha-release)
+and the [support supplement](support.md#later-local-hardware-acceptance--2026-11-11)
+for the subsequent bounded automatic GPU selection. Local core tests now pass
+**72 cases**, including the native bootstrap, exact writer ownership, AA patch
+bootstrap, active compiler temporary rename and incomplete producer regressions.
+The original **40 tests** also pass. Published alpha CI/assets retain their
+earlier identity; these local changes have not been submitted to a new CI run.
+
+Real single-card functional qualification passed output and official export
+conservation checks. A separate three-boot kernel experiment passed math but
+failed its 5% stability limit with 32.44% spread. FreeToken TP2 completed22
+oracle-matching requests before prefill AllGather sequence4167 timed out on both
+ranks. Its three-boot cohort is incomplete and inconclusive, with model A/B
+skipped. The first candidate fixture attempt was prevented by foreign GPU use;
+after a bounded blocked wait, a newly released pair permitted80 successful
+controlled eager/Graph numerical checks. Both devices' local timing drift
+exceeded the2% limit, so no model cohort ran. Failures and missing stages remain
+preserved; none implies a source adoption or performance improvement.
+
+Maintainer evidence handles are private under
+`artifacts/r3r6-gpu-20261111-112403/`: `single-case-verification.json`,
+`kernel-reference-review.json`, `kernel-case-verification.json`,
+`tp2-watchdog-summary3.json`, `tp2-watchdog-case-verification3.json`,
+`aa-action-audit-result.json`, `local-completed-action.json`,
+`local2-wait-result.json`, `local3-review.json`, `local3-case-verification.json`
+and `official-ui-service2.json`. Fresh dual-rank native
+coverage/perturbation, calibrated clocks, complete stable TP2 baselines, candidate
+comparison and a second TP2 pair remain unqualified.
+
+Official browser verification passed after enabling the upstream nonstandard-port
+flag in an isolated browser: native RPC9002, CPU main-thread HIP API and GPU queue
+tracks were visible. The first trial's wrong-port failure is retained. The CLI
+now returns official flag instructions for non-default ports, while9001 uses the
+base UI URL. This is a fresh fixture trace, not a newly qualified model trace.

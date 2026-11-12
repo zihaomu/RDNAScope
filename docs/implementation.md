@@ -155,3 +155,231 @@ The [0.2.0a1 release notes](release-0.2.0a1.md) describe the software alpha and 
 hardware gates. Distribution artifacts and a sanitized validation summary belong
 to the [GitHub prerelease](https://github.com/zihaomu/RDNAScope/releases/tag/v0.2.0a1).
 Private inputs/logs/profiles/caches remain outside Git and release assets.
+
+## Remaining GPU acceptance resumed — 2026-11-11
+
+The user resumed GPU acceptance and requested automatic selection of idle cards.
+This is a new attempt with fresh run IDs, identity/source/native checks,
+preregistered decode/wall A/A contracts and a bounded foreground resource scan.
+The opening snapshot had no eligible idle card. Existing exclusion/reservation
+rules remain in force. Actual hardware results will be recorded separately from
+the published alpha checkpoint above.
+
+Preflight found that rebinding the legacy native controller's output ROOT also
+redirected its official Trace Processor path. The bridge now executes a frozen
+controller copy with that independently SHA-bound tool reference preserved. A
+CPU regression exercises the complete native bootstrap without a GPU; **67 tests
+passed**. Original prototype/application sources remain unchanged, and the
+published 0.2.0a1 artifacts retain their original hashes. This local fix is not
+new collection qualification.
+
+## Live acceptance — 2026-11-11, local changes after the alpha release
+
+Automatic bounded discovery obtained an exclusive single R9700, then a TP2
+pair, respecting current reservations and both device exclusions. Original
+application/native inputs stayed read-only. These results belong to the local
+working tree; published 0.2.0a1 assets were not replaced.
+
+- Single-device eager/Graph HIP-event and rocprofv3 probes passed 20 independent
+  CPU-formula output checks. Official QUEUE windows conserve 36/38 native
+  kernels; all five declared Graph windows contain the expected two nodes.
+  This qualifies observed FP32 dispatch/export only. Loss, full model coverage,
+  cross-rank clocks and normal performance remain unknown.
+- The original supervisor correctly failed a root-owned official export.
+  An exact-owner/mount Docker writer binding now applies the host UID/GID, with
+  requested/applied argv recorded. Foundation and unrelated commands pass
+  through. Official offline recovery preserved the original DB hashes and
+  failure record. The bridge also preserves the independently bound official
+  Trace Processor path and copies the frozen AA overlay patch.
+- Live Triton compilation exposed an atomic temporary-directory rename race
+  in capacity monitoring. Only vanished descendants of active writer roots are
+  tolerated by nondigest monitoring. Root, owner, link, final seal, hash and GC
+  checks remain strict; monitoring is not a filesystem hard quota.
+- Trace-off FreeToken TP2 boot AA1 completed 12 requests, AA2 completed 10;
+  all 22 completed outputs matched the frozen oracle. AA2 long8000 repeat2
+  exceeded the 120-second HTTP budget. Both ranks' 60-second watchdogs stalled
+  at prefill MoE AllGather sequence4167, last completed4166/enqueued4170.
+  Enqueue callsites do not establish live CPU activity or pure transport wait.
+  AA3 and model candidate A/B were not run. The cohort is inconclusive; partial
+  producer arrays now explicitly fail the preregistered completeness contract.
+- A second real GPU workload adapter completed three independent FP32 scalar
+  Graph boots, 18 numerical checks and a separate 192-kernel native capture
+  with exact export conservation. Amortized HIP-span boot medians were
+  2560/3451/2747 ns/op: 32.44% spread versus a 5% limit. Its device/shape/runtime
+  reference is conditional, not a qualified numeric gap or roofline.
+- An isolated local candidate attempt stopped on foreign GPU use before its
+  fixture. One fresh bounded resource-only wait found no available pair. The
+  next closeout snapshot found a new exclusive pair. A fresh local attempt on
+  that pair passed80 actual candidate layout/output checks across eager/dynamic
+  Graph paths. All48 local samples were retained, but baseline drift13.71% and
+  12.89% exceeded the preregistered2% limit. Local performance remains
+  inconclusive, no model cohort ran and the candidate was not adopted. This is
+  a two-device controlled fixture, not distributed TP2/RCCL qualification.
+  No foreign process was stopped.
+- A new localhost official Perfetto RPC serves the fresh single-GPU Graph
+  qualification window on port9002. The previous model service is untouched.
+  A software-rendered browser verified native9002, CPU HIP API and GPU queue
+  tracks. The first trial connected to the old9001 because the upstream UI
+  requires a nonstandard-port flag; its failed result is preserved. Service
+  output and the workflow guide now explain the official flag and exact sidebar
+  check. The user's VS Code forwarding remains independently unverified.
+
+**72 local core tests and 40 original regressions passed.** Private immutable
+cases, failed attempts, source manifests, native DBs, official windows and exact
+commands are retained under `artifacts/r3r6-gpu-20261111-112403/`. They are not
+public fixtures. Full dual-rank native coverage/perturbation, complete stable TP2
+controls, candidate local/model comparison and a second TP2 pair remain open.
+The local candidate's controlled numerical gate passed; stable local performance
+and actual model/RCCL qualification remain separate open gates.
+The next diagnostic ROI must target prefill MoE; the historical decode8/9 ROI
+does not explain the new timeout. No model performance gain or source adoption
+was validated.
+
+## Layer-level scope refinement — 2026-11-12
+
+The user prefers layer-level visibility with a small cost and evidence for the
+next optimization target. The new [design](layer-observability.md) keeps added
+layer instrumentation disabled in scored benchmarks and uses separate, matched,
+bounded diagnostics for a shared agent/human layer summary. Whole-model Graph
+replay, event readout/reuse and perturbation require explicit qualification;
+infrequent readout alone does not reduce captured event-node execution.
+
+This step updates the design only. No collector/model/GPU change or new timing
+qualification occurred, and the earlier incomplete/inconclusive gates remain.
+
+## Thin tool scope decision — 2026-11-12
+
+The user explicitly accepts reducing scope to make RDNAScope a reusable RDNA
+observation tool. The accepted [ADR 0004](adr-0004-thin-tool-boundary.md) keeps
+capture, generic metadata/query/summary and official viewing. Consuming projects
+own their integration, benchmark/oracle/candidate rules and optimization skills;
+integration is not merely moved to an internal plugins directory.
+
+The inventory found application coupling in the packaged legacy bridge,
+benchmark parser, measurement adapter enum, HTTP result interpretation and their
+tests. Existing benchmark/experiment/reference/knowledge and compiler-cache
+orchestration also exceed the proposed daily product surface. Generic readers,
+quality/provenance checks and necessary owned-process/output handling can be
+reused. Raw outputs will belong to an explicit consumer directory.
+
+This step records scope, inventory and migration order only. README, architecture,
+roadmap and layer-design notices distinguish that target from current code.
+No source was extracted/deleted, API removed, old evidence rewritten, GPU started
+or new runtime qualification claimed. Referenced source and old releases must be
+preserved before paths are retired.
+
+## Complete thin-tool execution plan — 2026-11-12
+
+The [master plan](rdnascope_thin_tool_master_plan_20261112.md) consolidates the
+accepted scope into one implementation baseline: product/consumer ownership,
+bounded official capture and viewing, proposed configuration/CLI, minimal
+run/annotation/summary contracts, layer/Graph limits, overhead and lifecycle,
+source migration/rollback, T0–T3 tasks, verification and release criteria.
+README and roadmap now point to it. New interfaces remain explicitly proposed;
+this document step did not implement extraction, start GPU work or change
+current qualification.
+
+## Thin-tool T1 migration in progress — 2026-11-12
+
+T1.1 compared all 76 T0 snapshot entries with the live checkout: 71 identical,
+five documentation/entry files changed after the master plan, no file missing.
+The five current copies were frozen outside this repository before extraction.
+T1.2 placed the exact legacy application bridge in a consumer-owned sidecar
+outside both Git repositories, together with a local config template, HTTP result
+parser, consumer skill and CPU isolation checks. Four sidecar tests passed. The
+accepted model tree and historical evidence remain untouched.
+
+T1.3 mapped 37 stage files referencing the bridge and preserved the old source
+SHA in the external T0 snapshot. An independently installed 0.2.0a1 wheel
+verified the historical final case before source removal. Post-removal verification
+and T1.4/T1.5 are still pending. The private audit is recorded in the original
+project's `artifacts/thin-tool-migration-20261112-01/`; no new GPU acceptance is
+inferred from this CPU/source work.
+
+## Thin T1/T2 implementation checkpoint — 2026-11-12
+
+The old bridge and broad platform modules, 13 old schemas, application-bound
+examples and prior tests were mapped by SHA into the external T0 source archive
+before removal. The independent old wheel recursively verified the same
+historical final case after the bridge removal and again after full source
+removal, with identical results. Former source paths are unavailable here;
+the archive and old wheel are the rollback/read path.
+
+The new `0.3.0a1` candidate has only explicit configuration, bounded official
+record/export, read-only rocpd/PFTrace/Chrome queries, deterministic scope/rank
+reports and owned official UI control. The default command surface has no
+benchmark/candidate/knowledge/compiler namespace or `tlp` bridge. Six focused
+CPU tests passed; four consumer-side bridge/parser tests passed. A real
+historical **synthetic** official Graph PFTrace produced 38 native kernel rows
+in the previous qualification; the new reader returned native locators and a
+small report, then started official Trace Processor on port 9003 and stopped
+only its recorded process. This is an offline recheck, not new GPU collection.
+
+The first wheel/sdist audit found no application bridge/benchmark paths; one
+source-outside-checkout install and `pip check` passed before final contract
+edits. The final wheel must be rebuilt/retested after T3 CPU review. Current
+hardware resource discovery was read-only; physical 0/4/6 had no foreign KFD
+process or active reservation at the snapshot, but a snapshot is not a lease.
+Two other eligible cards had active foreign work/reservations, and physical 7
+had foreign VRAM use. No device has been allocated for this migration yet.
+Private actual logs and mappings are in the original workspace's
+`artifacts/thin-tool-migration-20261112-01/` and new repo's ignored
+`artifacts/thin-migration-20261112-01/`. T3 GPU, external consumer, cost and
+final release remain open.
+
+## Thin T3 hardware and external-use checkpoint — 2026-11-12
+
+An initial locked physical-SMI4 run failed before collection because the
+container lacked `jsonschema`; its logs and cleanup are retained. The thin
+runtime validator was replaced with a packaged standard-library schema-subset
+check, removing that dependency. Six local CPU tests passed after this fix.
+
+Fresh locked R9700/ROCm10.1 captures then passed bounded synthetic checks:
+single eager FP32 had five numeric samples and 16/16 kernel conservation;
+dynamic Graph had five numeric samples, five ordered launch windows and 19/19
+conservation. The first two dual-card choices were refused because foreign
+processes occupied one selected card. A later physical-SMI5/6 two-rank
+all-reduce run passed three numeric samples per rank, SQLite integrity on all
+three producer DBs and 66/66 native/official merged-export kernel
+conservation. Own containers and leases were released; no foreign task was
+stopped. The merged file does not calibrate rank clocks, and writer completion
+and independent record loss remain unknown.
+
+An external consumer in the original project used its own config, command and
+annotations without adding application code here. Seven CPU submission scopes
+generated the same JSON/Markdown diagnostic summary and a next measurement;
+official UI on port9003 was ready and its owned process stopped. A second
+historical scalar Graph PFTrace produced 192 kernel rows via the same reader,
+with its original SHA and historical status retained. The trace-off/profile/
+trace-off seven-sample cost series drifted substantially; monitoring cost is
+inconclusive and no one-percent claim is made. The consumer profile wrote a
+167493632-byte DB and 21099130-byte PFTrace under a polled 1GiB budget;
+capture/export took 3.744/6.407 seconds. Full evidence and step-by-step links
+are in the original project's plan steps111–113 and its
+`artifacts/thin-tool-migration-20261112-01/` directory. The FreeToken accepted
+model worktree and evidence were not modified.
+
+The [new support matrix](thin-support.md) now scopes this alpha to the actual
+device/runtime/fixture. Final source-outside wheel, package audit and local
+commit remain separate release gates.
+
+## Thin local alpha closeout — 2026-11-12
+
+The final CPU suite passed six tests, and the external consumer sidecar's
+current isolated test file passed three. The final `0.3.0a1` wheel/sdist were
+built after the runtime and documentation edits. In a fresh environment whose
+working directory is outside this checkout, the installed wheel passed import,
+version, doctor, schema, official PFTrace query, report, UI start/owned stop
+and `pip check`. Every packaged Python/schema byte matched current source;
+the wheel contained ten thin Python modules and three thin-v1 schemas, with no
+application bridge or legacy schema. The sdist contained the generic release
+note and thin docs. Local private audit JSON is under
+`artifacts/thin-migration-20261112-01/final-wheel-audit.json`.
+
+The [0.3.0a1 release note](release-0.3.0a1.md) and
+[support matrix](thin-support.md) state the narrow R9700 fixture qualification,
+unknown layer/rank clocks/loss and inconclusive monitoring cost. The original
+project's plan steps111–114 link failures and raw validation artifacts. The
+old public alpha assets and model baseline were not changed. This is a local
+alpha package and reviewable source change; remote CI/public release are not
+claimed by these local checks.

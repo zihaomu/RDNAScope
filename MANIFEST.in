@@ -1,5 +1,10 @@
-include README.zh-CN.md THIRD_PARTY.md AGENTS.md
+include README.zh-CN.md THIRD_PARTY.md
 include profiles/machine.example.toml
-recursive-include examples *.json
-recursive-include docs *.md
-recursive-include skills *.md
+include examples/chrome.json
+include docs/adr-0004-thin-tool-boundary.md
+include docs/rdnascope_thin_tool_master_plan_20261112.md
+include docs/thin-user-guide.md
+include docs/thin-support.md
+include docs/thin-migration.md
+include docs/release-0.3.0a1.md
+include skills/rdnascope/SKILL.md

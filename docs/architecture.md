@@ -1,5 +1,11 @@
 # R0/R1 architecture and contracts
 
+The implementation below describes the current alpha. The accepted
+[thin-tool boundary](adr-0004-thin-tool-boundary.md) narrows the next architecture:
+application integration and optimization workflows move to consuming projects;
+generic capture, query, summaries and official viewing remain. That migration is
+not yet complete.
+
 `rdnascope` is a portable offline core. Core imports never import a model, Torch, ROCm or TraceLens. Original evidence is a sealed file reference; derived results live in a separate managed cache.
 
 ```
