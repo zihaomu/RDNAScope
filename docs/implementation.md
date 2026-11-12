@@ -399,3 +399,12 @@ implicit Torch import. The exact outside-checkout script passed locally
 against the final alpha wheel (`0.3.0a1 1 1`), and the six focused CPU tests
 passed again. Remote 3.12/3.13 checks must be observed before declaring CI
 green; failed initial jobs remain visible.
+
+The pushed CI migration commit `8d0d541` passed both Python 3.12 and 3.13
+jobs in Actions runs `43144784053` and `43144790548`, including wheel install
+outside checkout. A further workflow review found the old manual GPU workflow
+still imported removed wide-alpha resource/workload modules. Its exact bytes
+match the external T0 snapshot and are mapped in the original project's
+`legacy-gpu-workflow-map.json`; the broken workflow was removed. Hardware
+resource admission and fixture execution remain external to the thin package.
+No remote GPU run or user model qualification is claimed.
