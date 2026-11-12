@@ -383,3 +383,19 @@ project's plan steps111–114 link failures and raw validation artifacts. The
 old public alpha assets and model baseline were not changed. This is a local
 alpha package and reviewable source change; remote CI/public release are not
 claimed by these local checks.
+
+## Thin alpha CI migration follow-up — 2026-11-12
+
+Draft PR 1 on `thin/0.3.0a1` exposed a stale outside-checkout wheel step in
+`.github/workflows/cpu.yml`: it still passed removed `--data-dir` and imported
+old `rdnascope.core`, `analysis`, `records` and registry APIs. The first 3.13
+job failed at CLI argument parsing; its remote log remains on GitHub Actions
+run `43144549796`. This is a CI protocol failure, not a GPU qualification.
+
+The workflow now installs the wheel outside checkout, runs current `doctor`
+and `schema`, builds a sealed generic Chrome fixture with thin-v1 contracts,
+then checks native-unit query, diagnostic report, installed import path and no
+implicit Torch import. The exact outside-checkout script passed locally
+against the final alpha wheel (`0.3.0a1 1 1`), and the six focused CPU tests
+passed again. Remote 3.12/3.13 checks must be observed before declaring CI
+green; failed initial jobs remain visible.
