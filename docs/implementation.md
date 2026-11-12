@@ -408,3 +408,8 @@ match the external T0 snapshot and are mapped in the original project's
 `legacy-gpu-workflow-map.json`; the broken workflow was removed. Hardware
 resource admission and fixture execution remain external to the thin package.
 No remote GPU run or user model qualification is claimed.
+
+The workflow-boundary commit `76c41f7` passed both Python versions in push
+Actions run `43144955484` and PR Actions run `43144960378`. Draft PR 1 remains
+unmerged; no public 0.3.0a1 tag or release has been created. The retained
+initial CI failure and the final passing runs are separate evidence.
