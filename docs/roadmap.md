@@ -1,5 +1,7 @@
 # RDNAScope 长期性能诊断与优化工具改进计划
 
+> 2026-11-12范围收缩：后续以[薄工具主计划](rdnascope_thin_tool_master_plan_20261112.md)和[ADR 0004](adr-0004-thin-tool-boundary.md)为准，聚焦通用采集/查询/摘要/官方查看。项目接入及优化工作流由使用方持有。下列R0–R6保留为历史路线与验收记录，不再全部作为薄工具必须承载的产品范围；移出工作尚未实施。
+
 > Planning snapshot from the original prototype. Current checkpoint: 0.2.0a1 software alpha; R0–R2 locally validated and R3–R6 software/evidence interfaces implemented. Fresh R3–R6 GPU/model/second-pair acceptance remains resource-blocked. Actual results are recorded in [implementation.md](implementation.md) and [R3–R6 validation](validation-r3r6.md). The design below retains its original historical wording.
 
 版本：计划草案 v1，2026-11-11。目标仓库：[zihaomu/RDNAScope](https://github.com/zihaomu/RDNAScope)。

@@ -1,8 +1,7 @@
-"""Read-only evidence providers. Output rows are views, not rewritten traces."""
-from collections import Counter, defaultdict
+"""Read-only native ROCm/Perfetto and generic Chrome providers."""
+from collections import defaultdict
 import csv
 import io
-import json
 import os
 from pathlib import Path
 import signal
@@ -11,32 +10,18 @@ import subprocess
 import tempfile
 import time
 
-from .core import canonical, file_hash, ns, read_json
+from .contracts import digest as file_hash, load_json as read_json
 from .storage import local_path, sqlite_readonly
 
-FORMATS = ('rocpd', 'pftrace', 'http', 'chrome', 'legacy_manifest', 'legacy_events')
-VIEWS = ('summary', 'events', 'kernels', 'metrics', 'phases', 'collectives', 'coverage', 'provenance')
 
-
-def detect_format(path, requested, settings):
-    if requested not in ('auto', *FORMATS):
-        raise ValueError('Unknown evidence format')
-    if requested in ('legacy_manifest', 'legacy_events'):
-        return requested
-    with path.open('rb') as f:
-        head = f.read(16)
-    if head == b'SQLite format 3\x00':
-        actual = 'rocpd'
-    elif path.suffix in ('.pftrace', '.pb', '.perfetto-trace'):
-        actual = 'pftrace'
-    else:
-        data = read_json(path, settings.max_json_bytes)
-        actual = ('chrome' if isinstance(data, dict) and isinstance(data.get('traceEvents'), list)
-                  else 'http' if isinstance(data, list) else None)
-    if actual is None or requested not in ('auto', actual):
-        raise ValueError('Input does not match its declared format')
-    return actual
-
+def ns(value, unit):
+    if type(value) not in (int, float) or unit not in ('ns', 'us', 'ms', 's'):
+        raise ValueError('Invalid timestamp or unit')
+    factor = {'ns': 1, 'us': 1000, 'ms': 1000000, 's': 1000000000}[unit]
+    result = value * factor
+    if not __import__('math').isfinite(result):
+        raise ValueError('Non-finite timestamp')
+    return round(result)
 
 def quote(name):
     return '"' + name.replace('"', '""') + '"'
@@ -81,23 +66,6 @@ def provider_info(provider, settings):
         version, _ = bounded_process([str(binary), '--version'], min(10, settings.timeout_seconds), 32768)
         info.update(binary_sha256=file_hash(binary), version=version.strip())
     return info
-
-
-def select(artifacts, requested='auto'):
-    names = {a['format'] for a in artifacts}
-    if requested == 'auto':
-        provider = next((p for p in ('rocpd', 'pftrace', 'chrome', 'http', 'legacy')
-                         if p in names or p == 'legacy' and 'legacy_events' in names), None)
-    else:
-        provider = requested
-    if provider not in ('rocpd', 'pftrace', 'chrome', 'http', 'legacy'):
-        raise ValueError('No supported provider')
-    selected = [a for a in artifacts if a['format'] == provider or provider == 'legacy' and a['format'].startswith('legacy_')]
-    # Identical byte aliases are one dataset, not two independent event sources.
-    selected = list({a['artifact_id']: a for a in selected}.values())
-    if not selected:
-        raise ValueError('Requested provider has no registered inputs')
-    return provider, selected
 
 
 def row(identity, artifact, locator, name, category, start=None, duration=None, process=None, **extra):
@@ -252,112 +220,43 @@ def perfetto(artifacts, identity, view, settings, limit, offset):
     return result[offset:offset + limit + 1] if view == 'summary' else result
 
 
-def json_events(artifacts, identity, provider, settings):
-    for a in artifacts:
-        if a['format'] == 'legacy_manifest':
-            continue
-        path = local_path(a['uri'])
-        if provider == 'legacy':
-            with path.open() as f:
-                index = 0
-                while True:
-                    line = f.readline(settings.max_json_bytes + 1)
-                    if not line:
-                        break
-                    if len(line) > settings.max_json_bytes:
-                        raise ValueError('Legacy line exceeds JSON budget')
-                    e = json.loads(line)
-                    if not isinstance(e, dict):
-                        raise ValueError('Legacy event must be an object')
-                    duration = e['duration_ns']
-                    if type(e['start_ns']) is not int or type(duration) is not int or duration < 0:
-                        raise ValueError('Invalid normalized legacy interval')
-                    category = 'macro_span' if e.get('evidence_level') == 'macro_hip_span' else e['category']
-                    yield row(identity, a, 'line=' + str(index + 1), e['name'], category, e['start_ns'], duration,
-                              rank=e.get('rank'), request=e.get('request'), phase=e.get('phase'), token=e.get('position'),
-                              graph=e.get('dispatch'), clock_domain=e.get('clock_domain', 'unknown'),
-                              association='inferred', original_category=e['category'],
-                              collective=e.get('collective'))
-                    index += 1
-            continue
-        data = read_json(path, settings.max_json_bytes)
-        if provider == 'chrome':
-            for i, e in enumerate(data['traceEvents']):
-                if not isinstance(e, dict):
-                    raise ValueError('Chrome event must be an object')
-                if e.get('ph') != 'X':
-                    continue
-                unit = identity['semantics']['time_unit']
-                start, duration = ns(e['ts'], unit), ns(e['dur'], unit)
-                if duration < 0:
-                    raise ValueError('Negative Chrome duration')
-                args = e.get('args', {})
-                if not isinstance(args, dict):
-                    raise ValueError('Chrome event args must be an object')
-                cat = e.get('cat', 'unknown')
-                category = 'kernel_dispatch' if cat in ('kernel', 'gpu_kernel', 'kernel_dispatch') else cat
-                yield row(identity, a, 'traceEvents/' + str(i), e.get('name', 'unknown'), category, start, duration, e.get('pid'),
-                          request=args.get('request'), phase=args.get('phase'), token=args.get('position'),
-                          graph=args.get('graph'), original_time={'ts': e['ts'], 'dur': e['dur'], 'unit': unit},
-                          original_category=cat)
-        elif provider == 'http':
-            for i, e in enumerate(data):
-                if not isinstance(e, dict) or type(e.get('wall_seconds')) not in (int, float) or e['wall_seconds'] < 0:
-                    raise ValueError('HTTP records require nonnegative wall_seconds')
-                if type(e.get('warmup', False)) is not bool:
-                    raise ValueError('HTTP warmup must be boolean')
-                first = e.get('first_text_seconds')
-                if first is not None and (type(first) not in (int, float) or first < 0):
-                    raise ValueError('Invalid HTTP first_text_seconds')
-                timings = e.get('timings', {})
-                if not isinstance(timings, dict):
-                    raise ValueError('HTTP timings must be an object')
-                yield {'event_id': a['artifact_id'] + '#row=' + str(i), 'artifact_id': a['artifact_id'],
-                       'case': e.get('case'), 'repeat': e.get('repeat'), 'warmup': e.get('warmup', False),
-                       'request_row': i, 'http_wall_seconds': e['wall_seconds'], 'http_first_text_seconds': first,
-                       'reported_decode_tokens_per_second': timings.get('predicted_per_second'),
-                       'reported_output_match': e.get('output_matches_frozen_oracle'), 'usage': e.get('usage'),
-                       'category': 'http_request', 'duration_ns': str(ns(e['wall_seconds'], 's')),
-                       'request': None, 'phase': None, 'token': None, 'rank': None, 'graph': None,
-                       'association': 'unmapped', 'clock_domain': 'unknown'}
-
-
-def legacy_valid(artifacts, settings):
-    manifest = next(a for a in artifacts if a['format'] == 'legacy_manifest')
-    events = next(a for a in artifacts if a['format'] == 'legacy_events')
-    m = read_json(local_path(manifest['uri']), settings.max_json_bytes)
-    if not isinstance(m, dict) or m.get('import_status') != 'complete' or m.get('normalized_sha256') != events['sha256']:
-        raise ValueError('Legacy import status/hash is not complete and intact')
-
-
 def json_query(artifacts, identity, provider, view, settings, limit, offset):
-    if provider == 'legacy':
-        legacy_valid(artifacts, settings)
-    selected, groups = [], defaultdict(lambda: [0, 0])
-    index = 0
-    deadline = time.monotonic() + settings.timeout_seconds
-    for e in json_events(artifacts, identity, provider, settings):
-        if time.monotonic() > deadline:
-            raise TimeoutError('JSON query exceeded time budget')
-        if view == 'summary':
-            key = (e['artifact_id'], e['category'])
-            groups[key][0] += 1
-            groups[key][1] += int(e['duration_ns'])
-            if len(groups) > 4096:
-                raise ValueError('Too many summary groups')
-            continue
-        if view == 'kernels' and e['category'] not in ('kernel_dispatch', 'kernel'):
-            continue
-        if view == 'phases' and e.get('phase') is None:
-            continue
-        if view == 'collectives' and not e.get('collective'):
-            continue
-        if index >= offset:
-            selected.append(e)
-        index += 1
-        if len(selected) > limit:
-            break
-    if view == 'summary':
-        return [{'artifact_id': a, 'category': cat, 'count': v[0], 'duration_ns': str(v[1]),
-                 'duration_semantics': 'sum_intervals_not_wall'} for (a, cat), v in sorted(groups.items())][offset:offset + limit + 1]
-    return selected
+    if provider != 'chrome':
+        raise ValueError('Only generic Chrome X events are supported')
+    rows=[]; groups=defaultdict(lambda:[0,0]); index=0
+    deadline=time.monotonic()+settings.timeout_seconds
+    for a in artifacts:
+        data=read_json(local_path(a['uri']),settings.max_json_bytes)
+        if not isinstance(data,dict) or not isinstance(data.get('traceEvents'),list):
+            raise ValueError('Chrome traceEvents array required')
+        for i,event in enumerate(data['traceEvents']):
+            if time.monotonic()>deadline:
+                raise TimeoutError('Chrome query exceeded budget')
+            if not isinstance(event,dict):
+                raise ValueError('Chrome event must be an object')
+            if event.get('ph')!='X':
+                continue
+            unit=identity['semantics']['time_unit']
+            start,duration=ns(event['ts'],unit),ns(event['dur'],unit)
+            if duration<0:
+                raise ValueError('Negative Chrome duration')
+            cat=event.get('cat','unknown')
+            category='kernel_dispatch' if cat in ('kernel','gpu_kernel','kernel_dispatch') else cat
+            args=event.get('args',{})
+            if not isinstance(args,dict):
+                raise ValueError('Chrome args must be an object')
+            item=row(identity,a,'traceEvents/'+str(i),event.get('name','unknown'),category,start,duration,event.get('pid'),
+                     request=args.get('request'),phase=args.get('phase'),token=args.get('position'),graph=args.get('graph'),
+                     original_time={'ts':event['ts'],'dur':event['dur'],'unit':unit},original_category=cat)
+            if view=='summary':
+                group=groups[(a['artifact_id'],category)];group[0]+=1;group[1]+=duration
+                if len(groups)>4096:raise ValueError('Too many summary groups')
+                continue
+            if view=='kernels' and category!='kernel_dispatch':continue
+            if index>=offset:rows.append(item)
+            index+=1
+            if len(rows)>limit:return rows
+    if view=='summary':
+        return [{'artifact_id':a,'category':cat,'count':count,'duration_ns':str(duration),
+                 'duration_semantics':'sum_intervals_not_wall'} for (a,cat),(count,duration) in sorted(groups.items())][offset:offset+limit+1]
+    return rows

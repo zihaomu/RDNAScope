@@ -1,0 +1,327 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "mode": {
+      "const": "diagnostic"
+    },
+    "context_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "capture": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "complete",
+            "incomplete",
+            "failed",
+            "unsupported",
+            "not_requested"
+          ]
+        },
+        "argv": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "exit_code": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "timed_out": {
+          "type": "boolean"
+        },
+        "tool_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "elapsed_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "status",
+        "argv",
+        "exit_code",
+        "timed_out",
+        "tool_sha256"
+      ]
+    },
+    "export": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "complete",
+            "incomplete",
+            "failed",
+            "unsupported",
+            "not_requested"
+          ]
+        },
+        "argv": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "exit_code": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "timed_out": {
+          "type": "boolean"
+        },
+        "tool_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "elapsed_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "status",
+        "argv",
+        "exit_code",
+        "timed_out",
+        "tool_sha256"
+      ]
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "format": {
+            "enum": [
+              "rocpd",
+              "pftrace",
+              "chrome",
+              "log",
+              "annotation"
+            ]
+          },
+          "role": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "derived_from": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "path",
+          "format",
+          "role",
+          "sha256",
+          "bytes",
+          "derived_from"
+        ]
+      }
+    },
+    "ranks": {
+      "type": "array",
+      "items": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rank": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "pid": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "device": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "proof": {
+            "enum": [
+              "exact",
+              "inferred",
+              "unmapped"
+            ]
+          }
+        },
+        "required": [
+          "rank",
+          "pid",
+          "device",
+          "proof"
+        ]
+      }
+    },
+    "clock": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "domain": {
+          "type": "string"
+        },
+        "calibration": {
+          "enum": [
+            "unknown",
+            "verified"
+          ]
+        }
+      },
+      "required": [
+        "domain",
+        "calibration"
+      ]
+    },
+    "coverage": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "writer_completed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "record_loss": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "declared_windows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "rank",
+              "clock_domain",
+              "begin_ns",
+              "end_ns"
+            ],
+            "properties": {
+              "rank": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "clock_domain": {
+                "type": "string"
+              },
+              "begin_ns": {
+                "type": "integer"
+              },
+              "end_ns": {
+                "type": "integer"
+              },
+              "id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "writer_completed",
+        "record_loss",
+        "declared_windows"
+      ]
+    },
+    "limits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "enum": [
+        "complete",
+        "incomplete",
+        "failed",
+        "unsupported",
+        "not_requested"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "mode",
+    "context_id",
+    "capture",
+    "export",
+    "artifacts",
+    "ranks",
+    "clock",
+    "coverage",
+    "limits",
+    "status"
+  ]
+}

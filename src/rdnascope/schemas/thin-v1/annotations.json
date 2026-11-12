@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "scopes": {
+      "type": "array",
+      "items": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string"
+          },
+          "rank": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "time_basis": {
+            "enum": [
+              "cpu_submission",
+              "gpu_stream",
+              "native_kernel"
+            ]
+          },
+          "clock_domain": {
+            "type": "string"
+          },
+          "start_ns": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "duration_ns": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "association": {
+            "enum": [
+              "exact",
+              "inferred",
+              "unmapped"
+            ]
+          },
+          "gpu_interval_verified": {
+            "type": "boolean"
+          },
+          "locator": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "kind",
+          "rank",
+          "time_basis",
+          "clock_domain",
+          "start_ns",
+          "duration_ns",
+          "association",
+          "gpu_interval_verified",
+          "locator"
+        ]
+      }
+    },
+    "source": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "scopes",
+    "source"
+  ]
+}

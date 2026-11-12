@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "diagnostic",
+        "inconclusive",
+        "failed"
+      ]
+    },
+    "source_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "groups": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "coverage": {
+      "type": "object"
+    },
+    "next_measurement": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "limits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "status",
+    "source_sha256",
+    "groups",
+    "coverage",
+    "next_measurement",
+    "limits"
+  ]
+}

@@ -163,6 +163,14 @@ URL and local RPC port. Forward that port with VS Code Remote, open the returned
 official UI URL locally and connect to the forwarded RPC. Paste `official_ui_sql`
 from `ui locate` into the UI Query tab. A native lookup must have one unique
 name/time/duration/PID match; PFTrace slice IDs also bind the exact parser build.
+For a non-default port, follow the returned `ui_setup`: in the official Flags
+page enable **Relax Content Security Policy for 127.0.0.1:***, then reopen the
+returned URL. Check the sidebar's exact `RPC @ 127.0.0.1:PORT` before interpreting
+the trace. Without that flag, the pinned UI can still connect to the default
+9001 service. This requirement comes from the
+[official UI implementation](https://github.com/google/perfetto/blob/v59.1/ui/src/frontend/index.ts).
 Existing services are not adopted or stopped. See [lifecycle](lifecycle.md) for
-service status, explicit keep and stop. Browser rendering was not revalidated in
-the R3–R6 pass; unique source-to-slice SQL lookup was.
+service status, explicit keep and stop. Later local acceptance verified browser
+rendering of a fresh single-device qualification window with native RPC on9002,
+CPU HIP API and GPU queue tracks. User-side forwarding remains independently
+unverified; rendering does not qualify model coverage or normal latency.

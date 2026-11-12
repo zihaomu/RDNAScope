@@ -27,22 +27,34 @@ jobs:
           python -m venv "$RUNNER_TEMP/rdnascope-wheel"
           "$RUNNER_TEMP/rdnascope-wheel/bin/python" -m pip install dist/*.whl
           cd "$RUNNER_TEMP"
-          "$RUNNER_TEMP/rdnascope-wheel/bin/rdnascope" --data-dir "$RUNNER_TEMP/offline-state" doctor
+          "$RUNNER_TEMP/rdnascope-wheel/bin/rdnascope" doctor
+          "$RUNNER_TEMP/rdnascope-wheel/bin/rdnascope" schema run-manifest > /dev/null
           "$RUNNER_TEMP/rdnascope-wheel/bin/python" - <<'PY'
-          import sys, rdnascope
+          import json, subprocess, sys, rdnascope
           from pathlib import Path
-          from rdnascope.core import Settings, SCHEMA_NAMES, schema, minimal_identity
-          from rdnascope.storage import Registry
-          from rdnascope.analysis import analyze
-          from rdnascope.records import Records
-          for name in SCHEMA_NAMES: assert schema(name)['type'] == 'object'
-          fixture = Path('wheel-fixture.json')
-          fixture.write_text('{"traceEvents":[{"ph":"X","name":"fixture","pid":1,"tid":1,"ts":0,"dur":2}]}')
-          settings = Settings(data_dir=Path('wheel-state').resolve())
-          identity = minimal_identity('wheel-demo'); identity['role'] = 'fixture'
-          Registry(settings).register(identity, [{'path': str(fixture.resolve())}])
-          analyze(settings, 'wheel-demo', 'wheel-analysis')
-          assert Records(settings).verify_tree('case', 'wheel-analysis')['status'] == 'verified'
+          from rdnascope.contracts import artifact, validate, write_new
+          run = Path('wheel-run')
+          run.mkdir()
+          fixture = run / 'fixture.json'
+          fixture.write_text('{"traceEvents":[{"ph":"X","name":"fixture","cat":"kernel","pid":1,"tid":1,"ts":0,"dur":2}]}')
+          phase = {'status':'not_requested','argv':[],'exit_code':None,'timed_out':False,'tool_sha256':None}
+          manifest = {'schema_version':1,'run_id':run.name,'context_id':'wheel-fixture','mode':'diagnostic',
+                      'status':'incomplete','capture':phase,'export':phase,
+                      'artifacts':[artifact(run,fixture,'chrome','input')],
+                      'ranks':[],'clock':{'domain':'unknown','calibration':'unknown'},
+                      'coverage':{'writer_completed':None,'record_loss':None,'declared_windows':[]},
+                      'limits':['Offline wheel fixture; no GPU collection']}
+          write_new(run / 'run-manifest.json', validate('run-manifest', manifest))
+          cli = str(Path(sys.executable).with_name('rdnascope'))
+          result = subprocess.run([cli,'query',str(run),'--provider','chrome','--view','kernels'],
+                                  check=True,capture_output=True,text=True)
+          rows = json.loads(result.stdout)['rows']
+          assert len(rows) == 1 and rows[0]['duration_ns'] == '2000'
+          result = subprocess.run([cli,'report',str(run),'--provider','chrome'],
+                                  check=True,capture_output=True,text=True)
+          report = json.loads(result.stdout)
+          assert report['status'] == 'inconclusive' and report['groups'][0]['samples'] == 1
+          assert Path(rdnascope.__file__).is_relative_to(Path(sys.prefix))
           assert 'torch' not in sys.modules
-          print(rdnascope.__version__, len(SCHEMA_NAMES))
+          print(rdnascope.__version__, len(rows), len(report['groups']))
           PY

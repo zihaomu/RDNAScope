@@ -1,8 +1,8 @@
 # Support snapshot — 0.2.0a1
 
 Status is evidence-scoped. A package version never qualifies all RDNA devices.
-No new GPU/model process was started during this implementation pass: selected
-devices were occupied by other jobs and admission refused them.
+The table describes the published alpha checkpoint. Later local GPU acceptance
+is recorded below and in [the implementation log](implementation.md).
 
 | Area | Observed validation | Boundary |
 |---|---|---|
@@ -31,3 +31,17 @@ trace-off TP2 controls and a justified candidate comparison; another available
 device pair. These need exclusive allocation and fresh runtime checks. A blocked
 resource check does not qualify those items. An unstable real A/A should end with
 an instability report, not repeated attempts until a speedup appears.
+
+## Later local hardware acceptance — 2026-11-11
+
+| Scope | Actual result | Boundary |
+|---|---|---|
+| R9700/gfx1201, ROCm10.1/HIP7.16, single GPU FP32 eager/Graph | Four probes, 20 numeric checks; official QUEUE conserves 36/38 kernels and five declared two-node Graph windows | Observed dispatch/export qualified; no other SKU, full-model, loss or normal-latency inference |
+| Same stack, second scalar Graph workload | Three independent boots, 18 numeric checks; separate 192-kernel official capture conserved | Amortized timing spread32.44% exceeds5%; performance reference conditional |
+| FreeToken/Qwen3.8 Flash Next TP2, trace off | AA1 12 outputs, AA2 10 outputs match; next long8000 request times out with both ranks at prefill AllGather4167 | Incomplete/inconclusive; no AA3, model A/B, gain or adoption |
+| Candidate on another physical pair | After a foreign-aborted attempt and bounded wait, newly available pair passed80 controlled eager/Graph output checks;48 local samples retained | Two-device fixture only; local drift13.71%/12.89% exceeds2%, model/RCCL and full TP2 pair qualification open; no adoption |
+| Framework cache monitoring | Live Triton temporary rename handled under active writer leases | Final integrity/owner/link checks remain strict; no real-cache GC |
+
+These later results and fixes have not replaced the published alpha assets.
+Remaining diagnosis must target the observed prefill path and separately resolve
+timing variance before qualifying performance comparisons.
